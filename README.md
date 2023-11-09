@@ -1,2 +1,3 @@
 # water-tracker-backend
-water-tracker-backend
+
+Collective project "WaterTracker backend"

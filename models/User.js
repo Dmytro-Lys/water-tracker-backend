@@ -66,9 +66,9 @@ export const userSchemaSignin = Joi.object({
 })
 
 
-// export const userSchemaEmail = Joi.object({
-//     email: addFieldJoi.call(Joi, userShemaValidation.email, "missing required field email")
-// })
+export const userSchemaEmail = Joi.object({
+    email: addFieldJoi.call(Joi, userShemaValidation.email, "missing required field email")
+})
 
 export const userSchemaAll = Joi.object({
    password: addFieldJoi.call(Joi, userShemaValidation.password, "", false)

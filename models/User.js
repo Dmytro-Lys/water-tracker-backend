@@ -23,23 +23,27 @@ const userShemaValidation = {
    }
 }
 
-const genderList = ["girl", "man"]
+const genderList = ["female", "male"]
 // Mongoose
 const userSchemaDB = new Schema({
    password: { ...addFieldMongoose(userShemaValidation.password), minlength: 8 },
    email: { ...addFieldMongoose(userShemaValidation.email), unique: true },
    userName: { ...addFieldMongoose(userShemaValidation.userName), required: false, minlength: 3 },
+   waterRate: {
+      type: Number,
+      min: 1,
+      max: 15000,
+      default: 2000
+   },
    gender: {
     type: String,
     enum: genderList,
-    default: "girl"
+    default: "female"
   },
    avatarURL: String, 
-   token: String,
-   verificationToken: {
-      type: String,
-   },
-  
+   token: String
+   
+   
    },  { versionKey: false, timestamps: true })
 
 userSchemaDB.post("save", handleSaveError);
@@ -56,7 +60,6 @@ export const userSchemaSignup = Joi.object({
    password: addFieldJoi.call(Joi, userShemaValidation.password)
          .min(8),
     email: addFieldJoi.call(Joi, userShemaValidation.email)
-   //  subscription: Joi.string().valid(...subscriptionList)
 })
 
 export const userSchemaSignin = Joi.object({
@@ -68,6 +71,11 @@ export const userSchemaSignin = Joi.object({
 
 export const userSchemaEmail = Joi.object({
     email: addFieldJoi.call(Joi, userShemaValidation.email, "missing required field email")
+})
+
+
+export const userSchemaWaterRate = Joi.object({
+    email: Joi.number().min(1).max(15000).required()
 })
 
 export const userSchemaAll = Joi.object({

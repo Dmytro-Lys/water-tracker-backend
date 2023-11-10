@@ -23,3 +23,24 @@ export function addFieldJoi(  {regExp, errorMessage}, messageRequired ='', requi
       .pattern(new RegExp(regExp))
         .messages(messagesErrorsJoi(errorMessage, messageRequired))
 }
+
+
+// export function addFieldJoiOpt({ regExp, errorMessage }, { messageRequired = '', required = true, type = 'string' }) {
+    
+      
+//    let joiType
+//    switch (type) {
+//      case 'number':
+//        joiType = this.string().pattern(new RegExp(regExp))
+//       .messages(messagesErrorsJoi(errorMessage, messageRequired));
+//      break;
+
+//      default:
+//         joiType = this.string().pattern(new RegExp(regExp))
+//       .messages(messagesErrorsJoi(errorMessage, messageRequired));
+//    }
+
+//    const joiRequired = required ? this.required() : {};
+//    // return { ...joiType, ...joiRequired}.pattern(new RegExp(regExp)).messages(messagesErrorsJoi(errorMessage, messageRequired))
+//    return { ...joiType, ...joiRequired}
+// }

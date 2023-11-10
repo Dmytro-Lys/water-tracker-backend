@@ -6,3 +6,4 @@ export { default as authenticate } from "./authenticate.js";
 export { default as upload } from "./upload.js";
 export { default as userValidateEmail } from "./userValidateEmail.js";
 export { default as userValidateAll } from "./userValidateAll.js";
+export { default as userValidateWaterRate } from "./userValidateWaterRate.js";

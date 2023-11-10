@@ -15,35 +15,31 @@ const userShemaValidation = {
       regExp: /^([0-9A-Za-z]{1}([-_\.]?[0-9A-Za-z]+)*)@(([0-9A-Za-z]{1}([-_]?[0-9A-Za-z]+)*\.){1,2}[A-Za-z]{2,})$/,
       errorMessage: "Field email must be a valid email",
       requiredErrorMessage: 'Email is required'
+   },
+   userName: {
+       regExp: /^[a-zA-Zа-яіїєА-ЯІЇЄ]+((['\-][a-zA-Zа-яіїєА-ЯІЇЄ])?[a-zA-Zа-яіїєА-ЯІЇЄ]*)*$/,
+      errorMessage: "Field name contains invalid characters",
+      requiredErrorMessage: ''
    }
 }
 
-const messagesSubscriptionErrors = {
-   "string.empty": "missing field {#label}", 
-   "any.required": "missing field {#label}"
-}
-
-const subscriptionList =  ["starter", "pro", "business"]
-
+const genderList = ["girl", "man"]
 // Mongoose
 const userSchemaDB = new Schema({
    password: { ...addFieldMongoose(userShemaValidation.password), minlength: 8 },
-    email: { ...addFieldMongoose(userShemaValidation.email), unique: true },
-   subscription: {
+   email: { ...addFieldMongoose(userShemaValidation.email), unique: true },
+   userName: { ...addFieldMongoose(userShemaValidation.userName), required: false, minlength: 3 },
+   gender: {
     type: String,
-    enum: subscriptionList,
-    default: "starter"
+    enum: genderList,
+    default: "girl"
   },
    avatarURL: String, 
    token: String,
    verificationToken: {
       type: String,
-      // required: [true, 'Verify token is required'],
    },
-   verify: {
-        type: Boolean,
-        default: false,
-    },
+  
    },  { versionKey: false, timestamps: true })
 
 userSchemaDB.post("save", handleSaveError);
@@ -59,8 +55,8 @@ const User = model("user", userSchemaDB);
 export const userSchemaSignup = Joi.object({
    password: addFieldJoi.call(Joi, userShemaValidation.password)
          .min(8),
-    email: addFieldJoi.call(Joi, userShemaValidation.email),
-    subscription: Joi.string().valid(...subscriptionList)
+    email: addFieldJoi.call(Joi, userShemaValidation.email)
+   //  subscription: Joi.string().valid(...subscriptionList)
 })
 
 export const userSchemaSignin = Joi.object({
@@ -70,9 +66,15 @@ export const userSchemaSignin = Joi.object({
 })
 
 
-export const userSchemaEmail = Joi.object({
-    email: addFieldJoi.call(Joi, userShemaValidation.email, "missing required field email")
-})
+// export const userSchemaEmail = Joi.object({
+//     email: addFieldJoi.call(Joi, userShemaValidation.email, "missing required field email")
+// })
 
+export const userSchemaAll = Joi.object({
+   password: addFieldJoi.call(Joi, userShemaValidation.password, "", false)
+         .min(8),
+    userName: addFieldJoi.call(Joi, userShemaValidation.userName, "", false),
+    gender: Joi.string().valid(...genderList)
+})
 
 export default User;

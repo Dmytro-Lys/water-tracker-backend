@@ -15,8 +15,11 @@ const messagesErrorsJoi = (message, messageRequired ) => {
    }
 }
 
-export function addFieldJoi(  {regExp, errorMessage}, messageRequired ='') {
-   return this.string().required()
+export function addFieldJoi(  {regExp, errorMessage}, messageRequired ='', required = true) {
+   return required ? this.string().required()
+      .pattern(new RegExp(regExp))
+      .messages(messagesErrorsJoi(errorMessage, messageRequired)) 
+      : this.string()
       .pattern(new RegExp(regExp))
         .messages(messagesErrorsJoi(errorMessage, messageRequired))
 }

@@ -9,16 +9,16 @@ const getAll = async (req, res) => {
   res.json(result);
 };
 
-const getById = async (req, res) => {
-  const { _id: owner } = req.user;
+// const getById = async (req, res) => {
+//   const { _id: owner } = req.user;
 
-  const { id } = req.params;
-  const result = await WaterInput.findOne({ _id: id, owner });
-  if (!result) {
-    throw HttpError(404, `Contact with ${contactId} is not found`);
-  }
-  res.json(result);
-};
+//   const { id } = req.params;
+//   const result = await WaterInput.findOne({ _id: id, owner });
+//   if (!result) {
+//     throw HttpError(404, `Contact with ${contactId} is not found`);
+//   }
+//   res.json(result);
+// };
 
 const add = async (req, res) => {
   const { _id: owner } = req.user;
@@ -40,22 +40,19 @@ const delById = async (req, res) => {
 const updateWaterInput = async (req, res) => {
   const { _id: owner } = req.user;
   const { id } = req.params;
-  console.log(id);
-  console.log(req.body);
-  console.log(owner);
-  // const result = await WaterInput.findOneAndUpdate(
-  //   { _id: id, owner },
-  //   req.body
-  // );
-  // if (!result) {
-  //   throw HttpError(404, `Card with ${id} is not found`);
-  // }
-  // res.json(result);
+  const result = await WaterInput.findOneAndUpdate(
+    { _id: id, owner },
+    req.body
+  );
+  if (!result) {
+    throw HttpError(404, `Card with ${id} is not found`);
+  }
+  res.json(result);
 };
 
 export default {
   getAll: ctrlWrapper(getAll),
-  getById: ctrlWrapper(getById),
+  // getById: ctrlWrapper(getById),
   add: ctrlWrapper(add),
   delById: ctrlWrapper(delById),
   updateWaterInput: ctrlWrapper(updateWaterInput),

@@ -6,7 +6,7 @@ import path from "path";
 import { nanoid } from "nanoid";
 
 import User from "../models/User.js";
-import { HttpError, sendEmail } from "../helpers/index.js";
+import { HttpError, sendEmail, cloudinary } from "../helpers/index.js";
 import { ctrlWrapper } from "../decorators/index.js";
 
 const { JWT_SECRET, BASE_URL } = process.env;
@@ -73,7 +73,7 @@ const getCurrent = async(req, res)=> {
     const { email, avatarURL, gender, waterRate, userName} = req.user;
     res.status(200).json({
         email,
-        avatarURL,
+        avatarURL,  
         userName,
         gender,
         waterRate
@@ -108,12 +108,11 @@ const updateUserInfo = async (req, res) => {
 
 const updateAvatarUser = async (req, res) => {
     const { _id } = req.user;
-    const { path: tmpPath, filename } = req.file;
-    const newPath = path.join(avatarsPath, filename);
-    const file = await Jimp.read(tmpPath);
-    await file.resize(250, 250).write(newPath);
-    await fs.unlink(tmpPath);
-    const avatarURL = path.join("avatars", filename);
+    const { path } = req.file;
+     const {url:avatarURL} = await cloudinary.uploader.upload(path, {
+        folder: "water-tracker"
+    });
+    await fs.unlink(path);
     const user = await User.findByIdAndUpdate(_id, { avatarURL });
     if (!user) throw HttpError(404, "Not found");
     res.status(200).json({

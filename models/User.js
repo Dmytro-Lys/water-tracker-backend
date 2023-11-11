@@ -42,7 +42,7 @@ const userSchemaDB = new Schema({
   },
    avatarURL: String, 
    token: String
-   
+
    
    },  { versionKey: false, timestamps: true })
 
@@ -75,13 +75,13 @@ export const userSchemaEmail = Joi.object({
 
 
 export const userSchemaWaterRate = Joi.object({
-    email: Joi.number().min(1).max(15000).required()
+    waterRate: Joi.number().min(1).max(15000).required()
 })
 
 export const userSchemaAll = Joi.object({
-   password: addFieldJoi.call(Joi, userShemaValidation.password, "", false)
+   password: addFieldJoi.call(Joi, userShemaValidation.password, "",  false )
          .min(8),
-    userName: addFieldJoi.call(Joi, userShemaValidation.userName, "", false),
+    userName: addFieldJoi.call(Joi, userShemaValidation.userName, "", false ),
     gender: Joi.string().valid(...genderList)
 })
 

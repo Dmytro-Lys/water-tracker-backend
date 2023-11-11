@@ -24,7 +24,7 @@ const signup = async(req, res, next) => {
     }
 
     const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "23h" });
-
+    await User.findByIdAndUpdate(user._id, { token });
    
     res.status(201).json({
          token,
@@ -92,7 +92,8 @@ const updateWaterRateUser = async (req, res) => {
 }
 
 const updateUserInfo = async (req, res) => {
-     req.body.password = await bcrypt.hash(password, 10);
+     const { password } = req.body
+    if (password) req.body.password = await bcrypt.hash(password, 10);
     
     const { _id, email } = req.user;
      const user = await User.findByIdAndUpdate(_id, req.body);

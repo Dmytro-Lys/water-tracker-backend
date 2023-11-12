@@ -13,12 +13,15 @@ import validateBody from "../../decorators/validateBody.js";
 
 const waterInputRouter = express.Router();
 waterInputRouter.use(authenticate);
+
 const waterInputValidate = validateBody(waterInputSchemaJoi);
 const updateWaterInputValidate = validateBody(updateWaterInputSchema);
 
 waterInputRouter.get("/", waterInputController.getAll);
 
 waterInputRouter.get("/today", waterInputController.getForToday);
+
+waterInputRouter.get("/:month", waterInputController.getByMonth);
 
 waterInputRouter.post(
   "/",

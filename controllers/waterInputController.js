@@ -1,5 +1,10 @@
 import WaterInput from "../models/WaterInput.js";
-import { HttpError } from "../helpers/index.js";
+import {
+  HttpError,
+  calculateDailyFulfillment,
+  formatDate,
+  regroupedDataByDays,
+} from "../helpers/index.js";
 import { ctrlWrapper } from "../decorators/index.js";
 
 const getAll = async (req, res) => {
@@ -13,7 +18,6 @@ const getForToday = async (req, res) => {
   const { _id: owner, waterRate } = req.user;
 
   const currentDate = new Date();
-
   const startOfDay = new Date(currentDate);
   startOfDay.setHours(0, 0, 0, 0); // Установка времени на начало текущего дня
 
@@ -28,27 +32,57 @@ const getForToday = async (req, res) => {
     owner,
   });
 
-  const sumOfFulfillment = waterInputsForToday.reduce(
-    (sum, el) => sum + el.waterVolume,
-    0
+  const dailyNormFulfillment = calculateDailyFulfillment(
+    waterInputsForToday,
+    waterRate
   );
-
-  const dailyNormFulfillment =
-    waterRate !== 0 ? (sumOfFulfillment / waterRate) * 100 : 0;
 
   res.json({ waterInputsForToday, dailyNormFulfillment });
 };
 
-// const getById = async (req, res) => {
-//   const { _id: owner } = req.user;
+const getByMonth = async (req, res) => {
+  const { _id: owner, waterRate } = req.user;
+  const { month } = req.params;
+  const adjustedMonth = parseInt(month) - 1; //Уменьшаем на 1, чтобы соответствовать нумерации месяцев в JavaScript
 
-//   const { id } = req.params;
-//   const result = await WaterInput.findOne({ _id: id, owner });
-//   if (!result) {
-//     throw HttpError(404, `Contact with ${contactId} is not found`);
-//   }
-//   res.json(result);
-// };
+  const startOfMonth = new Date();
+  startOfMonth.setMonth(adjustedMonth, 1); // Устанавливает первое число месяца
+
+  const endOfMonth = new Date();
+  endOfMonth.setMonth(adjustedMonth + 1, 0); // Устанавливает последний день месяца
+
+  const waterInputsForThisMonth = await WaterInput.find({
+    date: {
+      $gte: startOfMonth,
+      $lte: endOfMonth,
+    },
+    owner,
+  });
+  if (!waterInputsForThisMonth.length) {
+    throw HttpError(404, `There is no data according to ${month} month`);
+  }
+
+  const filteredArray = Object.values(
+    regroupedDataByDays(waterInputsForThisMonth)
+  );
+
+  const result = filteredArray.map((array) => {
+    const formattedDate = formatDate(array[0].date);
+
+    const formattedWaterRate = (waterRate / 1000).toFixed(1) + " L";
+
+    const dailyNormFulfillment = calculateDailyFulfillment(array, waterRate);
+
+    return {
+      data: formattedDate,
+      waterRate: formattedWaterRate,
+      dailyNormFulfillment,
+      servingOfWater: array.length,
+    };
+  });
+
+  res.json(result);
+};
 
 const add = async (req, res) => {
   const { _id: owner } = req.user;
@@ -82,7 +116,7 @@ const updateWaterInput = async (req, res) => {
 export default {
   getAll: ctrlWrapper(getAll),
   getForToday: ctrlWrapper(getForToday),
-  // getById: ctrlWrapper(getById),
+  getByMonth: ctrlWrapper(getByMonth),
   add: ctrlWrapper(add),
   delById: ctrlWrapper(delById),
   updateWaterInput: ctrlWrapper(updateWaterInput),

@@ -9,6 +9,36 @@ const getAll = async (req, res) => {
   res.json(result);
 };
 
+const getForToday = async (req, res) => {
+  const { _id: owner, waterRate } = req.user;
+
+  const currentDate = new Date();
+
+  const startOfDay = new Date(currentDate);
+  startOfDay.setHours(0, 0, 0, 0); // Установка времени на начало текущего дня
+
+  const endOfDay = new Date(currentDate);
+  endOfDay.setHours(23, 59, 59, 999); // Установка времени на конец текущего дня
+
+  const waterInputsForToday = await WaterInput.find({
+    date: {
+      $gte: startOfDay,
+      $lte: endOfDay,
+    },
+    owner,
+  });
+
+  const sumOfFulfillment = waterInputsForToday.reduce(
+    (sum, el) => sum + el.waterVolume,
+    0
+  );
+
+  const dailyNormFulfillment =
+    waterRate !== 0 ? (sumOfFulfillment / waterRate) * 100 : 0;
+
+  res.json({ waterInputsForToday, dailyNormFulfillment });
+};
+
 // const getById = async (req, res) => {
 //   const { _id: owner } = req.user;
 
@@ -22,7 +52,6 @@ const getAll = async (req, res) => {
 
 const add = async (req, res) => {
   const { _id: owner } = req.user;
-  console.log(req.user);
   const result = await WaterInput.create({ ...req.body, owner });
   res.status(201).json(result);
 };
@@ -52,6 +81,7 @@ const updateWaterInput = async (req, res) => {
 
 export default {
   getAll: ctrlWrapper(getAll),
+  getForToday: ctrlWrapper(getForToday),
   // getById: ctrlWrapper(getById),
   add: ctrlWrapper(add),
   delById: ctrlWrapper(delById),

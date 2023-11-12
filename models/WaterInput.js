@@ -7,7 +7,7 @@ const waterInputSchema = new Schema(
     waterVolume: {
       type: Number,
       min: 1,
-      max: 500,
+      max: 5000,
       required: [true, "Enter the value of the water used"],
     },
     date: {
@@ -32,7 +32,7 @@ const WaterInput = model("waterInput", waterInputSchema);
 
 // Joi
 export const waterInputSchemaJoi = Joi.object({
-  waterVolume: Joi.number().min(1).max(500).required().messages({
+  waterVolume: Joi.number().min(1).max(5000).required().messages({
     "number.min": `The "Input" should be minimum {#limit}`,
     "number.max": `The "Input" should be maximum {#limit}`,
     "any.required": `"waterVolume" required field`,
@@ -43,7 +43,7 @@ export const waterInputSchemaJoi = Joi.object({
 });
 
 export const updateWaterInputSchema = Joi.object({
-  waterVolume: Joi.number().min(1).max(500).required().messages({
+  waterVolume: Joi.number().min(1).max(5000).required().messages({
     "number.min": `The "Input" should be minimum {#limit}`,
     "number.max": `The "Input" should be maximum {#limit}`,
     "any.required": `"waterVolume" required field`,

@@ -18,7 +18,7 @@ const updateWaterInputValidate = validateBody(updateWaterInputSchema);
 
 waterInputRouter.get("/", waterInputController.getAll);
 
-// waterInputRouter.get("/:id", isValidId, waterInputController.getById);
+waterInputRouter.get("/today", waterInputController.getForToday);
 
 waterInputRouter.post(
   "/",

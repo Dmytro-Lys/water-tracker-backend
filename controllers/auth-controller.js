@@ -17,19 +17,19 @@ const signup = async(req, res, next) => {
     const {password, email} = req.body
     req.body.password = await bcrypt.hash(password, 10);
     
-    const user = await User.create(req.body);
+    const {_id} = await User.create(req.body);
     
     const payload = {
-        id: user._id,
+        id: _id,
     }
 
     const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "23h" });
-    await User.findByIdAndUpdate(user._id, { token });
+    await User.findByIdAndUpdate(_id, { token });
    
     res.status(201).json({
          token,
         user: {
-      email
+            email
      }
     })
 }
@@ -47,18 +47,22 @@ const signin = async(req, res, next) => {
        throw HttpError(401,"Email or password is wrong")
     }
     
-   
+    const {_id, userName = '', avatarURL = '', gender, waterRate} = user
     const payload = {
-        id: user._id,
+        id: _id,
     }
 
     const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "23h" });
-    await User.findByIdAndUpdate(user._id, { token });
+    await User.findByIdAndUpdate(_id, { token });
     
     res.status(200).json({
         token,
         user: {
-            email
+            email,
+            userName,
+            avatarURL,
+            gender,
+            waterRate
         }
     })
 }
@@ -70,7 +74,7 @@ const signout = async(req, res)=> {
 }
 
 const getCurrent = async(req, res)=> {
-    const { email, avatarURL, gender, waterRate, userName} = req.user;
+    const { email, avatarURL = '', gender, waterRate, userName = ''} = req.user;
     res.status(200).json({
         email,
         avatarURL,  
@@ -108,9 +112,16 @@ const updateUserInfo = async (req, res) => {
 
 const updateAvatarUser = async (req, res) => {
     const { _id } = req.user;
+    if (!req.file) {
+       throw HttpError(400,"File not found")
+    }
     const { path } = req.file;
      const {url:avatarURL} = await cloudinary.uploader.upload(path, {
-        folder: "water-tracker"
+         folder: "water-tracker/avatars",
+         public_id: `${_id}_avatar`,
+         overwrite: true,
+         transformation: { width: 250, height: 250, gravity: "faces", crop: "fill" } 
+      
     });
     await fs.unlink(path);
     const user = await User.findByIdAndUpdate(_id, { avatarURL });

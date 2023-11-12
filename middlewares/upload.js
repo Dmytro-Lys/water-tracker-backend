@@ -16,17 +16,18 @@ const limits = {
     fileSize: 5 * 1024 * 1024
 }
 
-// const fileFilter = (req, file, cb)=> {
-//     if(file.originalname.split(".").pop() === "exe") {
-//         cb(new Error("File extention not allow"));
-//     }
-//     cb(null, true);
-// }
+const fileFilter = (req, file, cb) => {
+    
+    if(file.originalname.split(".").pop() !== "jpg") {
+        cb(new Error("File extention not allow"));
+    }
+    cb(null, true);
+}
 
 const upload = multer({
     storage,
-    limits
-    // fileFilter,
+    limits,
+    fileFilter
 })
 
 export default upload;

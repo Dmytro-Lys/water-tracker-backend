@@ -28,7 +28,7 @@ waterInputRouter.post(
 );
 
 waterInputRouter.patch(
-  "/:id/waterInput",
+  "/:id/waterVolume",
   isValidId,
   isEmptyBody,
   updateWaterInputValidate,

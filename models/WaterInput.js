@@ -35,7 +35,7 @@ export const waterInputSchemaJoi = Joi.object({
   waterVolume: Joi.number().min(1).max(500).required().messages({
     "number.min": `The "Input" should be minimum {#limit}`,
     "number.max": `The "Input" should be maximum {#limit}`,
-    "any.required": `"waterInput" required field`,
+    "any.required": `"waterVolume" required field`,
   }),
   date: Joi.date().required().messages({
     "any.required": `"Set the time of entering"`,
@@ -46,7 +46,7 @@ export const updateWaterInputSchema = Joi.object({
   waterVolume: Joi.number().min(1).max(500).required().messages({
     "number.min": `The "Input" should be minimum {#limit}`,
     "number.max": `The "Input" should be maximum {#limit}`,
-    "any.required": `"waterInput" required field`,
+    "any.required": `"waterVolume" required field`,
   }),
 });
 

@@ -30,7 +30,7 @@ const getForToday = async (req, res) => {
       $lte: endOfDay,
     },
     owner,
-  });
+  }).select("-createdAt -updatedAt");
 
   const dailyNormFulfillment = calculateDailyFulfillment(
     waterInputsForToday,

@@ -8,17 +8,21 @@ import {
   isEmptyBody,
   authenticate,
   isValidId,
+  isValidMonth,
 } from "../../middlewares/index.js";
 import validateBody from "../../decorators/validateBody.js";
 
 const waterInputRouter = express.Router();
 waterInputRouter.use(authenticate);
+
 const waterInputValidate = validateBody(waterInputSchemaJoi);
 const updateWaterInputValidate = validateBody(updateWaterInputSchema);
 
 waterInputRouter.get("/", waterInputController.getAll);
 
-// waterInputRouter.get("/:id", isValidId, waterInputController.getById);
+waterInputRouter.get("/today", waterInputController.getForToday);
+
+waterInputRouter.get("/:month", isValidMonth, waterInputController.getByMonth);
 
 waterInputRouter.post(
   "/",
@@ -28,7 +32,7 @@ waterInputRouter.post(
 );
 
 waterInputRouter.patch(
-  "/:id/waterInput",
+  "/:id/waterVolume",
   isValidId,
   isEmptyBody,
   updateWaterInputValidate,

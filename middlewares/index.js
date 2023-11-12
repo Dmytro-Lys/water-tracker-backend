@@ -7,3 +7,4 @@ export { default as upload } from "./upload.js";
 export { default as userValidateEmail } from "./userValidateEmail.js";
 export { default as userValidateAll } from "./userValidateAll.js";
 export { default as userValidateWaterRate } from "./userValidateWaterRate.js";
+export { default as isValidMonth } from "./isValidMonth.js";

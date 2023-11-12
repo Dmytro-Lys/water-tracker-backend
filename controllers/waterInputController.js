@@ -59,7 +59,7 @@ const getByMonth = async (req, res) => {
     owner,
   });
   if (!waterInputsForThisMonth.length) {
-    throw HttpError(404, `There is no data according to ${month} month`);
+    throw HttpError(404, `No data available for month ${month}`);
   }
 
   const filteredArray = Object.values(

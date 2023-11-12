@@ -8,6 +8,7 @@ import {
   isEmptyBody,
   authenticate,
   isValidId,
+  isValidMonth,
 } from "../../middlewares/index.js";
 import validateBody from "../../decorators/validateBody.js";
 
@@ -21,7 +22,7 @@ waterInputRouter.get("/", waterInputController.getAll);
 
 waterInputRouter.get("/today", waterInputController.getForToday);
 
-waterInputRouter.get("/:month", waterInputController.getByMonth);
+waterInputRouter.get("/:month", isValidMonth, waterInputController.getByMonth);
 
 waterInputRouter.post(
   "/",

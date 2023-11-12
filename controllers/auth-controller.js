@@ -1,17 +1,14 @@
 import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken";
-import Jimp from "jimp";
 import fs from "fs/promises";
-import path from "path";
-import { nanoid } from "nanoid";
+import generatePassword from "omgopass"
+
 
 import User from "../models/User.js";
 import { HttpError, sendEmail, cloudinary } from "../helpers/index.js";
 import { ctrlWrapper } from "../decorators/index.js";
 
-const { JWT_SECRET, BASE_URL } = process.env;
-
-const avatarsPath = path.resolve("public", "avatars");
+const { JWT_SECRET} = process.env;
 
 const signup = async(req, res, next) => {
     const {password, email} = req.body
@@ -135,10 +132,44 @@ const updateAvatarUser = async (req, res) => {
     })
 }
 
+const resetPassword = async (req, res) => {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) {
+        throw HttpError(404, "Email not found")
+    }
+    
+    const newPassword = generatePassword({
+        syllablesCount: 3,
+        minSyllableLength: 2,
+        maxSyllableLength: 5,
+        separators: "-_+=@:?<>{}()#$%^&*!"
+    })
+
+    const password = await bcrypt.hash(newPassword, 10);
+    await User.findByIdAndUpdate(user._id, { password, token: "" });
+
+    const sendNewPassword = {
+        to: email,
+        subject: "Reset password",
+        html: `<div style="font-size: 14px"><h3>Reset password!</h3>
+        <p>You received this email because you sent a password reset request. <br>
+         A new password has been generated for you. <br>
+         Your new password: <strong>${newPassword}</strong> <br>
+         You can now use your new password to sign in to the Water Tracker App</p>
+        </div>`
+    }
+
+    await sendEmail(sendNewPassword);
+
+    res.status(200).json({
+        message: "A new password has been sent to your email"
+    })
+}
+
 export default {
     signup: ctrlWrapper(signup),
-    // verify: ctrlWrapper(verify),
-    // resendVerifyEmail: ctrlWrapper(resendVerifyEmail),
+    resetPassword: ctrlWrapper(resetPassword),
     signin: ctrlWrapper(signin),
     signout: ctrlWrapper(signout),
     getCurrent: ctrlWrapper(getCurrent),

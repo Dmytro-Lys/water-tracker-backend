@@ -1,6 +1,6 @@
 import express from 'express';
 import authController from "../../controllers/auth-controller.js";
-import { isEmptyBody, userValidateSignup, userValidateSignin, authenticate,  upload, userValidateWaterRate, userValidateAll } from '../../middlewares/index.js';
+import { isEmptyBody, userValidateSignup, userValidateSignin, authenticate,  upload, userValidateWaterRate, userValidateAll, userValidateEmail } from '../../middlewares/index.js';
 
 const authRouter = express.Router();
 
@@ -18,7 +18,7 @@ authRouter.patch("/water-rate", authenticate, isEmptyBody, userValidateWaterRate
 
 authRouter.patch("/avatars", authenticate, upload.single("avatar"), authController.updateAvatarUser);
 
-
+authRouter.post("/reset-password", userValidateEmail, authController.resetPassword);
 
 
 export default authRouter;

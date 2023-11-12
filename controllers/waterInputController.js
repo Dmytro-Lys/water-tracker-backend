@@ -58,9 +58,6 @@ const getByMonth = async (req, res) => {
     },
     owner,
   });
-  if (!waterInputsForThisMonth.length) {
-    throw HttpError(404, `No data available for month ${month}`);
-  }
 
   const filteredArray = Object.values(
     regroupedDataByDays(waterInputsForThisMonth)
@@ -69,7 +66,7 @@ const getByMonth = async (req, res) => {
   const result = filteredArray.map((array) => {
     const formattedDate = formatDate(array[0].date);
 
-    const formattedWaterRate = (waterRate / 1000).toFixed(1) + " L";
+    const formattedWaterRate = waterRate / 1000;
 
     const dailyNormFulfillment = calculateDailyFulfillment(array, waterRate);
 

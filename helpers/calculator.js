@@ -2,9 +2,7 @@ const calculateDailyFulfillment = (data, waterRate) => {
   const sumOfFulfillment = data.reduce((sum, el) => sum + el.waterVolume, 0);
 
   const dailyNormFulfillment =
-    waterRate !== 0
-      ? ((sumOfFulfillment / waterRate) * 100).toFixed(0) + "%"
-      : "0%";
+    waterRate !== 0 ? (sumOfFulfillment / waterRate) * 100 : 0;
 
   return dailyNormFulfillment;
 };

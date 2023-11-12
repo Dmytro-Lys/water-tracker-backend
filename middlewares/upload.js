@@ -6,8 +6,7 @@ const destination = path.resolve("tmp");
 const storage = multer.diskStorage({
     destination, 
     filename: (req, file, cb) => {
-        const uinquePreffix = `${Date.now()}_${Math.round(Math.random() * 1E9)}`;
-        const filename = `${uinquePreffix}_${file.originalname}`;
+        const filename = file.originalname;
         cb(null, filename);
     }
 });
@@ -16,10 +15,9 @@ const limits = {
     fileSize: 5 * 1024 * 1024
 }
 
-const fileFilter = (req, file, cb) => {
-    
-    if(file.originalname.split(".").pop() !== "jpg") {
-        cb(new Error("File extention not allow"));
+const fileFilter =  (req, file, cb) => {
+    if (file.originalname.split(".").pop() !== "jpg") {
+       return cb(new Error("File extention not allow"));
     }
     cb(null, true);
 }

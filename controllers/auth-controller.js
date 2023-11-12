@@ -17,7 +17,7 @@ const signup = async(req, res, next) => {
     const {password, email} = req.body
     req.body.password = await bcrypt.hash(password, 10);
     
-    const {_id} = await User.create(req.body);
+    const {_id, userName = '', avatarURL = '', gender, waterRate} = await User.create(req.body);
     
     const payload = {
         id: _id,
@@ -29,8 +29,12 @@ const signup = async(req, res, next) => {
     res.status(201).json({
          token,
         user: {
-            email
-     }
+            email,
+            userName,
+            avatarURL,
+            gender,
+            waterRate
+        }
     })
 }
 

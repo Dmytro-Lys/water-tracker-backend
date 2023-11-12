@@ -4,13 +4,13 @@ import { handleSaveError, runValidatorsAtUpdate } from "./hooks.js";
 
 const waterInputSchema = new Schema(
   {
-    waterInput: {
+    waterVolume: {
       type: Number,
       min: 1,
       max: 500,
       required: [true, "Enter the value of the water used"],
     },
-    recordingTime: {
+    date: {
       type: Date,
       default: Date.now,
       required: [true, "Enter the time of entering"],
@@ -32,18 +32,18 @@ const WaterInput = model("waterInput", waterInputSchema);
 
 // Joi
 export const waterInputSchemaJoi = Joi.object({
-  waterInput: Joi.number().min(1).max(500).required().messages({
+  waterVolume: Joi.number().min(1).max(500).required().messages({
     "number.min": `The "Input" should be minimum {#limit}`,
     "number.max": `The "Input" should be maximum {#limit}`,
     "any.required": `"waterInput" required field`,
   }),
-  recordingTime: Joi.date().required().messages({
+  date: Joi.date().required().messages({
     "any.required": `"Set the time of entering"`,
   }),
 });
 
 export const updateWaterInputSchema = Joi.object({
-  waterInput: Joi.number().min(1).max(500).required().messages({
+  waterVolume: Joi.number().min(1).max(500).required().messages({
     "number.min": `The "Input" should be minimum {#limit}`,
     "number.max": `The "Input" should be maximum {#limit}`,
     "any.required": `"waterInput" required field`,

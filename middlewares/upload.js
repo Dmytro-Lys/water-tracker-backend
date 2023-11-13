@@ -1,5 +1,6 @@
 import multer from "multer";
 import path from "path";
+import { HttpError } from "../helpers/index.js"
 
 const destination = path.resolve("tmp");
 
@@ -17,7 +18,7 @@ const limits = {
 
 const fileFilter =  (req, file, cb) => {
     if (file.originalname.split(".").pop() !== "jpg") {
-       return cb(new Error("File extention not allow"));
+       return cb(HttpError(400, "File extention not allow"));
     }
     cb(null, true);
 }

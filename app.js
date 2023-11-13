@@ -1,6 +1,7 @@
 import express from "express";
 import logger from "morgan";
 import cors from "cors";
+import multer from "multer";
 import authRouter from "./routes/api/auth-router.js";
 import waterInputRouter from "./routes/api/waterInputRouter.js";
 
@@ -20,7 +21,7 @@ app.use((req, res) => {
 });
 
 app.use((err, req, res, next) => {
-  const { status = 500, message = "Server error" } = err;
+  const { status = err instanceof multer.MulterError ? 400 : 500, message = "Server error" } = err;
   res.status(status).json({ message });
 });
 

@@ -1,0 +1,115 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "version": "1.0.0",
+    "title": "Water tracker",
+    "description": "API documentation for project Water tracker.  \n\nЦей проект є веб-додатком для керування особистим споживанням води в межах добової норми, який дозволяє користувачам вести облік своїх порцій випитої води протягом дня. Головна мета проекту полягає в тому, щоб забезпечити користувачів інструментами для контролю кількості води в організмі, планування та відслідковування її споживань. \n\nУ проекті передбачено можливість реєстрації користувачів, їх аутентифікації та авторизації. Крім того, користувачі можуть створювати та відстежувати свої порції вживання води протягом дня, переглядати статистику за місяць, а також виконувати редагування та видалення своїх порцій. \n\nОкрім того, додаток має дружній та зрозумілий інтерфейс користувача, що дозволяє зручно та швидко виконувати всі необхідні дії. Проект також забезпечує безпеку користувачів за допомогою шифрування паролів та ідентифікації за допомогою токенів. \n\n**Функціональні можливості:** \n\nРеєстрація та авторизація користувачів \n\nДодавання, перегляд та видалення порцій випитої води \n\nВідображення детальної статистики за день. \n\nВідображення загальної статистики користувачів за місяць. \n\n**Стек технологій, що використовується у проекті:** \n\nNode.js - середовище виконання JavaScript на сервері \n\nExpress.js - фреймворк для розробки веб-додатків на Node.js \n\nMongoDB - NoSQL база даних \n\nMongoose - бібліотека для роботи з MongoDB у Node.js",
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "consumes": ["application/json", "multipart/form-data"],
+  "produces": ["application/json"],
+  "servers": [{ "url": "https://water-tracker-backend.onrender.com/api" }],
+  "tags": [
+    {
+      "name": "Auth",
+      "description": "Authorization endpoints"
+    },
+     {
+      "name": "Water inputs",
+      "description": "Water inputs endpoints"
+    }
+  ],
+  "paths": {
+    "/users/signup": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "User registration",
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "Registration's object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegistrationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegistrationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {}
+          },
+          "409": {
+            "description": "Provided email already exists",
+            "content": {}
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "RegistrationRequest": {
+        "type": "object",
+        "required": ["email", "password"],
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email"
+          },
+          "password": {
+            "type": "string",
+            "description": "User's password",
+            "example": "qwerty123"
+          }
+        }
+      },
+      "RegistrationResponse": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "email": {
+              "type": "string",
+              "description": "User's email",
+              "format": "email"
+            },
+            "userId": {
+              "type": "number",
+              "description": "User's id",
+              "example": "32143232436545474"
+            }
+          }
+        },
+        "example": [
+          { "email": "1@gmail.com", "userId": "1" },
+          { "email": "2@gmail.com", "userId": "2" }
+        ]
+      }
+    },
+    "securitySchemes": {
+      "Bearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

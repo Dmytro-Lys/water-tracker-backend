@@ -11,7 +11,7 @@
   },
   "consumes": ["application/json", "multipart/form-data"],
   "produces": ["application/json"],
-  "servers": [{ "url": "https://water-tracker-backend.onrender.com/api" }],
+  "servers": [{ "url": "https://water-tracker-backend.onrender.com" }],
   "tags": [
     {
       "name": "Auth",
@@ -23,40 +23,95 @@
     }
   ],
   "paths": {
-    "/users/signup": {
+    "/api/users/signup": {
       "post": {
         "tags": ["Auth"],
-        "summary": "User registration",
+        "summary": "Sign up new user - User registration",
         "parameters": [],
-        "security": [{ "Bearer": [] }],
         "requestBody": {
-          "description": "Registration's object",
+          "description": "Signup's object",
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/RegistrationRequest"
+                "$ref": "#/components/schemas/UserAuthRequest"
               }
             }
           }
         },
         "responses": {
           "201": {
-            "description": "Successful operation",
+            "description": "New User Registered",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/RegistrationResponse"
+                  "$ref": "#/components/schemas/UserInfoWithToken"
                 }
               }
             }
           },
           "400": {
-            "description": "Bad request (invalid request body)",
+            "description": "Bad request (error message of shema validation)",
             "content": {}
           },
           "409": {
-            "description": "Provided email already exists",
+            "description": "Email in use",
+            "content": {}
+          }
+        }
+      }
+    },
+     "/api/users/signin": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Sign in existing user",
+        "parameters": [],
+        "requestBody": {
+          "description": "Sigin's object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserAuthRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Sign in existing user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserInfoWithToken"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (error message of shema validation)",
+            "content": {}
+          },
+          "401": {
+            "description": "Email or password is wrong",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/api/users/logout": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "User log out",
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "204": {
+            "description": "User log out",
+            "content": {}
+          },
+          "401": {
+            "description": "Not authorized",
             "content": {}
           }
         }
@@ -65,7 +120,37 @@
   },
   "components": {
     "schemas": {
-      "RegistrationRequest": {
+      "UserInfo":{
+        "type":"object",
+        "properties":{
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email"
+          },
+          "userName": {
+            "type": "string",
+            "description": "User's name",
+            "example": ""
+          },
+          "avatarURL": {
+            "type": "string",
+            "description": "User's avatar",
+            "example": ""
+          },
+          "gender": {
+            "type": "string",
+            "description": "User's gender",
+            "example": "female"
+          },
+          "waterRate": {
+            "type": "integer",
+            "description": "User's daily water rate",
+            "example": "2000"
+          }
+        }  
+      },
+      "UserAuthRequest": {
         "type": "object",
         "required": ["email", "password"],
         "properties": {
@@ -77,39 +162,30 @@
           "password": {
             "type": "string",
             "description": "User's password",
-            "example": "qwerty123"
+            "example": "qwertY123!"
           }
         }
       },
-      "RegistrationResponse": {
-        "type": "array",
-        "items": {
-          "type": "object",
-          "properties": {
-            "email": {
-              "type": "string",
-              "description": "User's email",
-              "format": "email"
-            },
-            "userId": {
-              "type": "number",
-              "description": "User's id",
-              "example": "32143232436545474"
-            }
+      "UserInfoWithToken": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type":"string",
+            "description":"Bearer token",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOiIyOWI4ZmZmNS0xN2NjLTQ5NTYtOTViZC1jN2U3N2FkZDEwOWEiLCJpYXQiOjE2ODE4OTM3MzEsImV4cCI6MTAwMDAwMDE2ODE4OTM3MzJ9.hQpNKIj4SR7Gm9waUMn7hzwKQyqwKrniL_qSW7SxrjM"
+          },
+          "user": {
+            "$ref": "#/components/schemas/UserInfo"
           }
-        },
-        "example": [
-          { "email": "1@gmail.com", "userId": "1" },
-          { "email": "2@gmail.com", "userId": "2" }
-        ]
+        }
       }
-    },
+    },  
     "securitySchemes": {
-      "Bearer": {
+      "bearerAuth": {
         "type": "http",
         "scheme": "bearer",
         "bearerFormat": "JWT"
       }
     }
-  }
+  }  
 }

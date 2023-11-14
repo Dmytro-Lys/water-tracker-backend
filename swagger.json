@@ -11,13 +11,16 @@
   },
   "consumes": ["application/json", "multipart/form-data"],
   "produces": ["application/json"],
-  "servers": [{ "url": "https://water-tracker-backend.onrender.com" }],
+  "servers": [
+    { "url": "https://water-tracker-backend.onrender.com" },
+    { "url": "https:ocalhost:4000" }
+  ],
   "tags": [
     {
       "name": "Auth",
       "description": "Authorization endpoints"
     },
-     {
+    {
       "name": "Water inputs",
       "description": "Water inputs endpoints"
     }
@@ -61,7 +64,7 @@
         }
       }
     },
-     "/api/users/signin": {
+    "/api/users/signin": {
       "post": {
         "tags": ["Auth"],
         "summary": "Sign in existing user",
@@ -116,13 +119,41 @@
           }
         }
       }
+    },
+    "/api/waterInputs/": {
+      "get": {
+        "tags": ["Water inputs"],
+        "summary": "Get all water entries by the User",
+        "parameters": [
+          { "in": "query", "name": "page" },
+          { "in": "query", "name": "limit" }
+        ],
+        "security": [{ "Bearer": [] }],
+        "requestBody": {},
+        "responses": {
+          "200": {
+            "description": "Successfull operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetAllWaterInputsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {}
+          }
+        }
+      }
     }
   },
   "components": {
     "schemas": {
-      "UserInfo":{
-        "type":"object",
-        "properties":{
+      "UserInfo": {
+        "type": "object",
+        "properties": {
           "email": {
             "type": "string",
             "description": "User's email",
@@ -148,7 +179,7 @@
             "description": "User's daily water rate",
             "example": "2000"
           }
-        }  
+        }
       },
       "UserAuthRequest": {
         "type": "object",
@@ -170,16 +201,54 @@
         "type": "object",
         "properties": {
           "token": {
-            "type":"string",
-            "description":"Bearer token",
+            "type": "string",
+            "description": "Bearer token",
             "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOiIyOWI4ZmZmNS0xN2NjLTQ5NTYtOTViZC1jN2U3N2FkZDEwOWEiLCJpYXQiOjE2ODE4OTM3MzEsImV4cCI6MTAwMDAwMDE2ODE4OTM3MzJ9.hQpNKIj4SR7Gm9waUMn7hzwKQyqwKrniL_qSW7SxrjM"
           },
           "user": {
             "$ref": "#/components/schemas/UserInfo"
           }
         }
+      },
+      "GetAllWaterInputsResponse": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "_id": {
+              "type": "string",
+              "desctiption": "ID of water input records"
+            },
+            "waterVolume": {
+              "type": "integer",
+              "desctiption": "The portion of water consumed in a single entry."
+            },
+            "date": {
+              "type": "string",
+              "description": "Time of water intake."
+            },
+            "owner": {
+              "type": "string",
+              "description": "User's id"
+            }
+          }
+        },
+        "example": [
+          {
+            "_id": "65509fe5990eba42a7c84d80",
+            "waterVolume": 50,
+            "date": "2023-11-01T15:23:45.678Z",
+            "owner": "654f6747c4faaae3bc1857f1"
+          },
+          {
+            "_id": "6550a2c5990eba42a7c84d83",
+            "waterVolume": 100,
+            "date": "2023-10-01T15:23:45.678Z",
+            "owner": "654f6747c4faaae3bc1857f1"
+          }
+        ]
       }
-    },  
+    },
     "securitySchemes": {
       "bearerAuth": {
         "type": "http",
@@ -187,5 +256,5 @@
         "bearerFormat": "JWT"
       }
     }
-  }  
+  }
 }

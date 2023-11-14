@@ -1,11 +1,11 @@
 import express from "express";
-import todayController from "../../controllers/todayController.js";
+import todayWaterController from "../../controllers/todayWaterController.js";
 
 import { authenticate } from "../../middlewares/index.js";
 
 const todayRouter = express.Router();
 todayRouter.use(authenticate);
 
-todayRouter.get("/", todayController.getForToday);
+todayRouter.get("/", todayWaterController.getForToday);
 
 export default todayRouter;

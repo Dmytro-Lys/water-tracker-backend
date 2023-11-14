@@ -78,7 +78,7 @@
         "summary": "Sign in existing user",
         "parameters": [],
         "requestBody": {
-          "description": "Sigin's object",
+          "description": "Signin's object",
           "required": true,
           "content": {
             "application/json": {
@@ -115,17 +115,6 @@
         "tags": ["Auth"],
         "summary": "User log out",
         "parameters": [],
-        "requestBody": {
-          "description": "Sigin's object",
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UserAuthRequest"
-              }
-            }
-          }
-        },
         "security": [{ "Bearer": [] }],
         "responses": {
           "204": {
@@ -268,6 +257,11 @@
               "schema":{
                 "type": "object",
                 "properties": {
+                  "email": {
+                      "type": "string",
+                      "description": "User's email",
+                      "format": "email"
+                    },
                   "userName": {
                     "type": "string",
                     "description": "User's name",

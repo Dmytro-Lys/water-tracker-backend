@@ -147,6 +147,31 @@
           }
         }
       }
+    },
+    "/api/waterInputs/today": {
+      "get": {
+        "tags": ["Water inputs"],
+        "summary": "Get total water consume of User by current day",
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+        "requestBody": {},
+        "responses": {
+          "200": {
+            "description": "Successfull operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetTotalWaterInputByCurrentDayResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {}
+          }
+        }
+      }
     }
   },
   "components": {
@@ -247,6 +272,56 @@
             "owner": "654f6747c4faaae3bc1857f1"
           }
         ]
+      },
+      "GetTotalWaterInputByCurrentDayResponse": {
+        "type": "object",
+        "properties": {
+          "waterInputsForToday": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "_id": {
+                  "type": "string",
+                  "description": "ID of water input records"
+                },
+                "waterVolume": {
+                  "type": "integer",
+                  "description": "The portion of water consumed in a single entry."
+                },
+                "date": {
+                  "type": "string",
+                  "description": "Time of water intake."
+                },
+                "owner": {
+                  "type": "string",
+                  "description": "User's id"
+                }
+              }
+            }
+          },
+          "dailyNormFulfillment": {
+            "type": "integer",
+            "description": "Total daily water consumption fulfillment."
+          }
+        },
+        "example": {
+          "waterInputsForToday": [
+            {
+              "_id": "6550bd6da31c7d1b6d55241a",
+              "waterVolume": 1,
+              "date": "2023-11-12T10:03:24.626Z",
+              "owner": "654f6747c4faaae3bc1857f1"
+            },
+            {
+              "_id": "6550bd80a31c7d1b6d55241d",
+              "waterVolume": 2,
+              "date": "2023-11-12T13:05:24.626Z",
+              "owner": "654f6747c4faaae3bc1857f1"
+            }
+          ],
+          "dailyNormFulfillment": 50
+        }
       }
     },
     "securitySchemes": {

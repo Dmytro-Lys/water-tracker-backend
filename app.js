@@ -2,15 +2,9 @@ import express from "express";
 import logger from "morgan";
 import cors from "cors";
 import multer from "multer";
-import swaggerUi from "swagger-ui-express";
-import swaggerDocument from "./swagger.json" assert { type: "json" };
-import {
-  waterRouter,
-  todayWaterRouter,
-  monthWaterRouter,
-  authRouter,
-  waterInputRouter,
-} from "./routes/api/index.js";
+import swaggerUi from 'swagger-ui-express';
+import swaggerDocument from './swagger.json'  assert { type: "json" };
+import { authRouter, userRouter, waterRateRouter,  waterRouter, todayWaterRouter,  monthWaterRouter, waterInputRouter } from "./routes/api/index.js";
 
 const app = express();
 
@@ -20,7 +14,9 @@ app.use(logger(formatsLogger));
 app.use(cors());
 app.use(express.json());
 app.use(express.static("public"));
-app.use("/api/users", authRouter);
+app.use("/api/auth", authRouter);
+app.use("/api/users", userRouter);
+app.use("/api/waterRate", waterRateRouter);
 app.use("/api/waterInputs", waterInputRouter);
 app.use("/api/water", waterRouter);
 app.use("/api/today", todayWaterRouter);

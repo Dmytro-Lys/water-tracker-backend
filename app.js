@@ -4,9 +4,7 @@ import cors from "cors";
 import multer from "multer";
 import swaggerUi from 'swagger-ui-express';
 import swaggerDocument from './swagger.json'  assert { type: "json" };
-import { authRouter, userRouter, waterRateRouter } from "./routes/api/index.js";
-
-import waterInputRouter from "./routes/api/waterInputRouter.js";
+import { authRouter, userRouter, waterRateRouter,  waterRouter, todayWaterRouter,  monthWaterRouter, waterInputRouter } from "./routes/api/index.js";
 
 const app = express();
 
@@ -20,14 +18,20 @@ app.use("/api/auth", authRouter);
 app.use("/api/users", userRouter);
 app.use("/api/waterRate", waterRateRouter);
 app.use("/api/waterInputs", waterInputRouter);
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.use("/api/water", waterRouter);
+app.use("/api/today", todayWaterRouter);
+app.use("/api/month", monthWaterRouter);
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use((req, res) => {
   res.status(404).json({ message: "Not found" });
 });
 
 app.use((err, req, res, next) => {
-  const { status = err instanceof multer.MulterError ? 400 : 500, message = "Server error" } = err;
+  const {
+    status = err instanceof multer.MulterError ? 400 : 500,
+    message = "Server error",
+  } = err;
   res.status(status).json({ message });
 });
 

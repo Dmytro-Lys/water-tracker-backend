@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "version": "1.0.0",
+    "version": "1.1.1",
     "title": "Water tracker",
     "description": "API documentation for project Water tracker.  \n\nЦей проект є веб-додатком для керування особистим споживанням води в межах добової норми, який дозволяє користувачам вести облік своїх порцій випитої води протягом дня. Головна мета проекту полягає в тому, щоб забезпечити користувачів інструментами для контролю кількості води в організмі, планування та відслідковування її споживань. \n\nУ проекті передбачено можливість реєстрації користувачів, їх аутентифікації та авторизації. Крім того, користувачі можуть створювати та відстежувати свої порції вживання води протягом дня, переглядати статистику за місяць, а також виконувати редагування та видалення своїх порцій. \n\nОкрім того, додаток має дружній та зрозумілий інтерфейс користувача, що дозволяє зручно та швидко виконувати всі необхідні дії. Проект також забезпечує безпеку користувачів за допомогою шифрування паролів та ідентифікації за допомогою токенів. \n\n**Функціональні можливості:** \n\nРеєстрація та авторизація користувачів \n\nДодавання, перегляд та видалення порцій випитої води \n\nВідображення детальної статистики за день. \n\nВідображення загальної статистики користувачів за місяць. \n\n**Стек технологій, що використовується у проекті:** \n\nNode.js - середовище виконання JavaScript на сервері \n\nExpress.js - фреймворк для розробки веб-додатків на Node.js \n\nMongoDB - NoSQL база даних \n\nMongoose - бібліотека для роботи з MongoDB у Node.js",
     "license": {
@@ -18,12 +18,20 @@
       "description": "Authorization endpoints"
     },
      {
+      "name": "User",
+      "description": "User profile endpoints"
+    },
+     {
+      "name": "WaterRate",
+      "description": "User water rate endpoints"
+    },
+     {
       "name": "Water inputs",
       "description": "Water inputs endpoints"
     }
   ],
   "paths": {
-    "/api/users/signup": {
+    "/api/auth/signup": {
       "post": {
         "tags": ["Auth"],
         "summary": "Sign up new user - User registration",
@@ -51,7 +59,7 @@
             }
           },
           "400": {
-            "description": "Bad request (error message of shema validation)",
+            "description": "Validation error",
             "content": {}
           },
           "409": {
@@ -61,7 +69,7 @@
         }
       }
     },
-     "/api/users/signin": {
+    "/api/auth/signin": {
       "post": {
         "tags": ["Auth"],
         "summary": "Sign in existing user",
@@ -89,7 +97,7 @@
             }
           },
           "400": {
-            "description": "Bad request (error message of shema validation)",
+            "description": "Validation error",
             "content": {}
           },
           "401": {
@@ -99,15 +107,286 @@
         }
       }
     },
-    "/api/users/logout": {
+    "/api/auth/logout": {
       "post": {
         "tags": ["Auth"],
         "summary": "User log out",
         "parameters": [],
+        "requestBody": {
+          "description": "Sigin's object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserAuthRequest"
+              }
+            }
+          }
+        },
         "security": [{ "Bearer": [] }],
         "responses": {
           "204": {
             "description": "User log out",
+            "content": {}
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/api/auth/reset-password": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Reset user's password",
+        "parameters": [],
+        "requestBody": {
+          "description": "User's email",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "description": "User's email",
+                    "format": "email"
+                  }
+                }  
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "A new password has been sent to your email",
+            "content": {}
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {}
+          },
+          "404": {
+            "description": "Email not found",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/api/users/avatars": {
+      "patch": {
+        "tags": ["User"],
+        "summary": "Change user's avatar",
+        "parameters": [],
+        "requestBody": {
+          "description": "Upload file new user's avatar",
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema":{
+                "type": "object",
+                "properties": {
+                  "avatar": {
+                    "type": "string",
+                    "description": "File of avatar",
+                    "format":"binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "200": {
+            "description": "Avatar's URL",
+            "content": {
+              "application/json": {
+                "schema":{
+                  "type": "object",
+                  "properties": {
+                    "avatarURL": {
+                      "type": "string",
+                      "description": "Avatar's URL",
+                      "example": "http://res.cloudinary.com/asdvsfs/image/upload/v1745783123/avatars/214d37639e15fd1ac2e9a53c_avatar.jpg"
+                    }
+                  }
+                }  
+              }
+            }
+          },
+          "400": {
+            "description": "File not found, File extention not allow",
+            "content": {}
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {}
+          }
+        }
+      }
+    },
+     "/api/users/current": {
+      "get": {
+        "tags": ["User"],
+        "summary": "Get current user info",
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "200": {
+            "description": " Logged user returned",
+            "content": {
+              "application/json": {
+                "schema": { 
+                  "$ref": "#/components/schemas/UserInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/api/users/": {
+      "patch": {
+        "tags": ["User"],
+        "summary": "Update user profile",
+        "parameters": [],
+        "requestBody": {
+          "description": "Update user",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema":{
+                "type": "object",
+                "properties": {
+                  "userName": {
+                    "type": "string",
+                    "description": "User's name",
+                    "example": "David"
+                  },
+                  "gender": {
+                    "type": "string",
+                    "description": "User's gender",
+                    "example": "male",
+                    "enum":[
+                      "male",
+                     "female"
+                    ]
+                  },
+                  "oldPassword": {
+                    "type": "string",
+                    "description": "Old user's password",
+                    "example": "qwertY123!"
+                  },
+                  "newPassword": {
+                    "type": "string",
+                    "description": "New user's password",
+                    "example": "qwertY123+"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "200": {
+            "description": "Update user returned",
+            "content": {
+              "application/json": {
+                "schema":{
+                  "type": "object",
+                  "properties": {
+                    "email": {
+                      "type": "string",
+                      "description": "User's email",
+                      "format": "email"
+                    },
+                    "userName": {
+                      "type": "string",
+                      "description": "User's name",
+                      "example": "David"
+                    },
+                    "gender": {
+                      "type": "string",
+                      "description": "User's gender",
+                      "example": "male",
+                      "enum": [
+                        "male",
+                       "female"
+                      ]
+                    }
+                  }
+                }  
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {}
+          },
+          "401": {
+            "description": "Not authorized, wrong old password",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/api/waterRate/": {
+      "patch": {
+        "tags": ["WaterRate"],
+        "summary": "Change user's water rate",
+        "parameters": [],
+        "requestBody": {
+          "description": "New water rate",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema":{
+                "type": "object",
+                "properties": {
+                  "waterRate": {
+                    "type": "integer",
+                    "description": "User's water rate",
+                    "example": "1500"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "200": {
+            "description": "New water rate value",
+            "content": {
+              "application/json": {
+                "schema":{
+                  "type": "object",
+                  "properties": {
+                    "email": {
+                      "type": "string",
+                      "description": "User's email",
+                      "format": "email"
+                    },
+                    "waterRate": {
+                      "type": "integer",
+                      "description": "User's water rate",
+                      "example": "1500"
+                    }
+                  }
+                }  
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
             "content": {}
           },
           "401": {
@@ -141,7 +420,11 @@
           "gender": {
             "type": "string",
             "description": "User's gender",
-            "example": "female"
+            "example": "female",
+             "enum":[
+                      "male",
+                     "female"
+                    ]
           },
           "waterRate": {
             "type": "integer",

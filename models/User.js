@@ -79,7 +79,9 @@ export const userSchemaWaterRate = Joi.object({
 })
 
 export const userSchemaAll = Joi.object({
-   password: addFieldJoi.call(Joi, userShemaValidation.password, "",  false )
+   oldPassword: addFieldJoi.call(Joi, userShemaValidation.password, "",  false )
+         .min(8),
+   newPassword: addFieldJoi.call(Joi, userShemaValidation.password, "",  false )
          .min(8),
     userName: addFieldJoi.call(Joi, userShemaValidation.userName, "", false ),
     gender: Joi.string().valid(...genderList)

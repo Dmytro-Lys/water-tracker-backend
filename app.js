@@ -4,7 +4,8 @@ import cors from "cors";
 import multer from "multer";
 import swaggerUi from 'swagger-ui-express';
 import swaggerDocument from './swagger.json'  assert { type: "json" };
-import authRouter from "./routes/api/auth-router.js";
+import { authRouter, userRouter, waterRateRouter } from "./routes/api/index.js";
+
 import waterInputRouter from "./routes/api/waterInputRouter.js";
 
 const app = express();
@@ -15,7 +16,9 @@ app.use(logger(formatsLogger));
 app.use(cors());
 app.use(express.json());
 app.use(express.static("public"));
-app.use("/api/users", authRouter);
+app.use("/api/auth", authRouter);
+app.use("/api/users", userRouter);
+app.use("/api/waterRate", waterRateRouter);
 app.use("/api/waterInputs", waterInputRouter);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 

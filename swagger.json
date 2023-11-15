@@ -45,7 +45,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UserAuthRequest"
+                "$ref": "#/components/schemas/AuthRequest"
               }
             }
           }
@@ -56,7 +56,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UserInfoWithToken"
+                  "$ref": "#/components/schemas/UserInfoWithTokenSingupResponse"
                 }
               }
             }
@@ -83,7 +83,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UserAuthRequest"
+                "$ref": "#/components/schemas/AuthRequest"
               }
             }
           }
@@ -94,7 +94,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UserInfoWithToken"
+                  "$ref": "#/components/schemas/UserInfoWithTokenSinginResponse"
                 }
               }
             }
@@ -139,22 +139,21 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "properties": {
-                  "email": {
-                    "type": "string",
-                    "description": "User's email",
-                    "format": "email"
-                  }
-                }  
+                "$ref": "#/components/schemas/AuthResetPasswordRequest"
               }
-            }
+            }  
           }
         },
         "responses": {
           "200": {
-            "description": "A new password has been sent to your email",
-            "content": {}
+            "description": "Success message",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResetPasswordResponse"
+                }
+              }  
+            }  
           },
           "400": {
             "description": "Validation error",
@@ -178,14 +177,7 @@
           "content": {
             "multipart/form-data": {
               "schema":{
-                "type": "object",
-                "properties": {
-                  "avatar": {
-                    "type": "string",
-                    "description": "File of avatar",
-                    "format":"binary"
-                  }
-                }
+                 "$ref": "#/components/schemas/UserChangeAvatarRequest"
               }
             }
           }
@@ -197,14 +189,7 @@
             "content": {
               "application/json": {
                 "schema":{
-                  "type": "object",
-                  "properties": {
-                    "avatarURL": {
-                      "type": "string",
-                      "description": "Avatar's URL",
-                      "example": "http://res.cloudinary.com/asdvsfs/image/upload/v1745783123/avatars/214d37639e15fd1ac2e9a53c_avatar.jpg"
-                    }
-                  }
+                  "$ref": "#/components/schemas/UserChangeAvatarResponse"
                 }  
               }
             }
@@ -220,7 +205,7 @@
         }
       }
     },
-     "/api/users/current": {
+    "/api/users/current": {
       "get": {
         "tags": ["User"],
         "summary": "Get current user info",
@@ -232,7 +217,7 @@
             "content": {
               "application/json": {
                 "schema": { 
-                  "$ref": "#/components/schemas/UserInfo"
+                  "$ref": "#/components/schemas/UserInfoResponse"
                 }
               }
             }
@@ -255,38 +240,7 @@
           "content": {
             "application/json": {
               "schema":{
-                "type": "object",
-                "properties": {
-                  "email": {
-                      "type": "string",
-                      "description": "User's email",
-                      "format": "email"
-                    },
-                  "userName": {
-                    "type": "string",
-                    "description": "User's name",
-                    "example": "David"
-                  },
-                  "gender": {
-                    "type": "string",
-                    "description": "User's gender",
-                    "example": "male",
-                    "enum":[
-                      "male",
-                     "female"
-                    ]
-                  },
-                  "oldPassword": {
-                    "type": "string",
-                    "description": "Old user's password",
-                    "example": "qwertY123!"
-                  },
-                  "newPassword": {
-                    "type": "string",
-                    "description": "New user's password",
-                    "example": "qwertY123+"
-                  }
-                }
+                "$ref": "#/components/schemas/UserChangeInfoRequest"
               }
             }
           }
@@ -298,28 +252,7 @@
             "content": {
               "application/json": {
                 "schema":{
-                  "type": "object",
-                  "properties": {
-                    "email": {
-                      "type": "string",
-                      "description": "User's email",
-                      "format": "email"
-                    },
-                    "userName": {
-                      "type": "string",
-                      "description": "User's name",
-                      "example": "David"
-                    },
-                    "gender": {
-                      "type": "string",
-                      "description": "User's gender",
-                      "example": "male",
-                      "enum": [
-                        "male",
-                       "female"
-                      ]
-                    }
-                  }
+                  "$ref": "#/components/schemas/UserChangeInfoResponse"
                 }  
               }
             }
@@ -346,14 +279,7 @@
           "content": {
             "application/json": {
               "schema":{
-                "type": "object",
-                "properties": {
-                  "waterRate": {
-                    "type": "integer",
-                    "description": "User's water rate",
-                    "example": "1500"
-                  }
-                }
+                "$ref": "#/components/schemas/WaterRateRequest"
               }
             }
           }
@@ -365,19 +291,7 @@
             "content": {
               "application/json": {
                 "schema":{
-                  "type": "object",
-                  "properties": {
-                    "email": {
-                      "type": "string",
-                      "description": "User's email",
-                      "format": "email"
-                    },
-                    "waterRate": {
-                      "type": "integer",
-                      "description": "User's water rate",
-                      "example": "1500"
-                    }
-                  }
+                  "$ref": "#/components/schemas/WaterRateResponse"
                 }  
               }
             }
@@ -396,7 +310,90 @@
   },
   "components": {
     "schemas": {
-      "UserInfo": {
+      "AuthRequest": {
+        "type": "object",
+        "required": ["email", "password"],
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email"
+          },
+          "password": {
+            "type": "string",
+            "description": "User's password",
+            "example": "qwertY123!"
+          }
+        }
+      },
+      "AuthResetPasswordRequest": {
+        "type": "object",
+        "required": ["email"],
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email"
+          }
+        }
+      },
+      "UserChangeAvatarRequest": {
+        "type": "object",
+        "required": ["avatar"],
+        "properties": {
+          "avatar": {
+            "type": "string",
+            "description": "File of avatar",
+            "format":"binary"
+          }
+        }
+      },
+      "UserChangeInfoRequest": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email"
+          },
+          "userName": {
+            "type": "string",
+            "description": "User's name",
+            "example": "David"
+          },
+          "gender": {
+            "type": "string",
+            "description": "User's gender",
+            "example": "male",
+            "enum":[
+              "male",
+              "female"
+            ]
+          },
+          "oldPassword": {
+            "type": "string",
+            "description": "Old user's password",
+            "example": "qwertY123!"
+          },
+          "newPassword": {
+            "type": "string",
+            "description": "New user's password",
+            "example": "qwertY123+"
+          }
+        }
+      },
+      "WaterRateRequest": {
+        "type": "object",
+        "required": ["waterRate"],
+        "properties": {
+          "waterRate": {
+            "type": "integer",
+            "description": "User's water rate",
+            "example": "1500"
+          }
+        }
+      },
+      "UserInfoDefaultResponse": {
         "type": "object",
         "properties": {
           "email": {
@@ -430,23 +427,42 @@
           }
         }
       },
-      "UserAuthRequest": {
+      "UserInfoResponse": {
         "type": "object",
-        "required": ["email", "password"],
         "properties": {
           "email": {
             "type": "string",
             "description": "User's email",
             "format": "email"
           },
-          "password": {
+          "userName": {
             "type": "string",
-            "description": "User's password",
-            "example": "qwertY123!"
+            "description": "User's name",
+            "example": "David"
+          },
+          "avatarURL": {
+            "type": "string",
+            "description": "User's avatar",
+            "example": "http://res.cloudinary.com/asdvsfs/image/upload/v1745783123/avatars/214d37639e15fd1ac2e9a53c_avatar.jpg"
+          },
+          "gender": {
+            "type": "string",
+            "description": "User's gender",
+            "example": "male",
+             "enum":[
+                      "male",
+                     "female"
+                    ]
+          },
+          "waterRate": {
+            "type": "integer",
+            "description": "User's daily water rate",
+            "example": "1500"
           }
         }
       },
-      "UserInfoWithToken": {
+
+      "UserInfoWithTokenSingupResponse": {
         "type": "object",
         "properties": {
           "token": {
@@ -455,7 +471,74 @@
             "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOiIyOWI4ZmZmNS0xN2NjLTQ5NTYtOTViZC1jN2U3N2FkZDEwOWEiLCJpYXQiOjE2ODE4OTM3MzEsImV4cCI6MTAwMDAwMDE2ODE4OTM3MzJ9.hQpNKIj4SR7Gm9waUMn7hzwKQyqwKrniL_qSW7SxrjM"
           },
           "user": {
-            "$ref": "#/components/schemas/UserInfo"
+            "$ref": "#/components/schemas/UserInfoDefaultResponse"
+          }
+        }
+      },
+       "UserInfoWithTokenSinginResponse": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "description": "Bearer token",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOiIyOWI4ZmZmNS0xN2NjLTQ5NTYtOTViZC1jN2U3N2FkZDEwOWEiLCJpYXQiOjE2ODE4OTM3MzEsImV4cCI6MTAwMDAwMDE2ODE4OTM3MzJ9.hQpNKIj4SR7Gm9waUMn7hzwKQyqwKrniL_qSW7SxrjM"
+          },
+          "user": {
+            "$ref": "#/components/schemas/UserInfoResponse"
+          }
+        }
+      },
+      "AuthResetPasswordResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Success message",
+            "example":"A new password has been sent to your email"
+          }
+        }
+      },
+      "UserChangeAvatarResponse": {
+        "type": "object",
+        "properties": {
+          "avatarURL": {
+            "type": "string",
+            "description": "Avatar's URL",
+            "example": "http://res.cloudinary.com/asdvsfs/image/upload/v1745783123/avatars/214d37639e15fd1ac2e9a53c_avatar.jpg"
+          }
+        }
+      },
+      "UserChangeInfoResponse": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email"
+          },
+          "userName": {
+            "type": "string",
+            "description": "User's name",
+            "example": "David"
+          },
+          "gender": {
+            "type": "string",
+            "description": "User's gender",
+            "example": "male",
+             "enum":[
+                      "male",
+                     "female"
+                    ]
+          }
+        }
+      },
+      "WaterRateResponse": {
+        "type": "object",
+        "properties": {
+          "waterRate": {
+            "type": "integer",
+            "description": "User's water rate",
+            "example": "1500"
           }
         }
       },

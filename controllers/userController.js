@@ -5,7 +5,7 @@ import User from "../models/User.js";
 import { HttpError,  cloudinary } from "../helpers/index.js";
 import { ctrlWrapper } from "../decorators/index.js";
 
-const getCurrent = async(req, res)=> {
+const getCurrent =  (req, res)=> {
     const { email, avatarURL = '', gender, waterRate, userName = ''} = req.user;
     res.status(200).json({
         email,
@@ -33,10 +33,10 @@ const updateUserInfo = async (req, res) => {
         delete req.body.newPassword
    }
     
-    const { _id, email } = req.user;
+    const { _id } = req.user;
      const user = await User.findByIdAndUpdate(_id, req.body);
     if (!user) throw HttpError(404, "Not found");
-    const { userName, gender } = user;
+    const { userName, gender, email } = user;
     res.status(200).json({
         email,
         userName,

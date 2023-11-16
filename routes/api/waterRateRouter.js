@@ -4,6 +4,6 @@ import { isEmptyBody, authenticate,  userValidateWaterRate } from '../../middlew
 
 const waterRateRouter = express.Router();
 
-waterRateRouter.patch("/water-rate", authenticate, isEmptyBody, userValidateWaterRate, waterRateController.updateWaterRateUser);
+waterRateRouter.patch("/", authenticate, isEmptyBody, userValidateWaterRate, waterRateController.updateWaterRateUser);
 
 export default waterRateRouter;

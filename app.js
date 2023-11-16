@@ -16,7 +16,7 @@ app.use(express.json());
 app.use(express.static("public"));
 app.use("/api/auth", authRouter);
 app.use("/api/users", userRouter);
-app.use("/api/waterRate", waterRateRouter);
+app.use("/api/water-rate", waterRateRouter);
 app.use("/api/waterInputs", waterInputRouter);
 app.use("/api/water", waterRouter);
 app.use("/api/today", todayWaterRouter);

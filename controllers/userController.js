@@ -20,6 +20,7 @@ const updateUserInfo = async (req, res) => {
     const { oldPassword, newPassword } = req.body
     if (oldPassword) {
         if (!newPassword) throw HttpError(400, "New password not found")
+        if (oldPassword === newPassword) throw HttpError(400, "The new password must be different from the old password")
         const passwordCompare = await bcrypt.compare(oldPassword, req.user.password)
         if (!passwordCompare) {
             throw HttpError(401, "Old password is wrong")
@@ -36,7 +37,7 @@ const updateUserInfo = async (req, res) => {
     const { _id } = req.user;
      const user = await User.findByIdAndUpdate(_id, req.body);
     if (!user) throw HttpError(404, "Not found");
-    const { userName, gender, email } = user;
+    const { userName = "", gender, email } = user;
     res.status(200).json({
         email,
         userName,

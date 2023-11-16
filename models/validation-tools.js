@@ -7,10 +7,11 @@ export const addFieldMongoose = ({regExp, errorMessage, requiredErrorMessage}) =
 }
 
 const messagesErrorsJoi = (message, messageRequired ) => {
-   const defaultMessage = "missing required {#label} field"
+   const defaultRequiredMessage = "missing required {#label} field"
+   const defaultEmptyMessage = "field {#label} is empty"
    return {
-      "string.empty": messageRequired ? messageRequired : defaultMessage , 
-      "any.required": messageRequired ? messageRequired : defaultMessage,
+      "string.empty": messageRequired ? messageRequired : defaultRequiredMessage , 
+      "any.required": messageRequired ? messageRequired : defaultEmptyMessage,
       "string.pattern.base": message
    }
 }

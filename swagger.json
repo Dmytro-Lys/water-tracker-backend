@@ -277,7 +277,7 @@
         }
       }
     },
-    "/api/waterRate/": {
+    "/api/water-rate/": {
       "patch": {
         "tags": ["WaterRate"],
         "summary": "Change user's water rate",

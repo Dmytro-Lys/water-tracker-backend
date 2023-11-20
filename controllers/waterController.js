@@ -4,7 +4,13 @@ import { ctrlWrapper } from "../decorators/index.js";
 
 const add = async (req, res) => {
   const { _id: owner } = req.user;
-  const result = await WaterInput.create({ ...req.body, owner });
+  const newInput = await WaterInput.create({ ...req.body, owner });
+  const result = {
+    _id: newInput._id,
+    waterVolume: newInput.waterVolume,
+    date: newInput.date,
+    owner: newInput.owner,
+  };
   res.status(201).json(result);
 };
 

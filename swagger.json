@@ -26,10 +26,6 @@
       "description": "User water rate endpoints"
     },
     {
-      "name": "Water inputs",
-      "description": "Total amount of water consumed by the User"
-    },
-    {
       "name": "Water",
       "description": "Water endpoint for adding, editing and deleting information about water input "
     },
@@ -820,9 +816,7 @@
           "waterVolume": 900,
           "date": "2023-11-14T17:06:57.705Z",
           "owner": "654f6747c4faaae3bc1857f1",
-          "_id": "6553d1774cfd0635de52d96b",
-          "createdAt": "2023-11-14T19:58:47.162Z",
-          "updatedAt": "2023-11-14T19:58:47.162Z"
+          "_id": "6553d1774cfd0635de52d96b"
         }
       },
       "EditInputRequest": {

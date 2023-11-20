@@ -52,8 +52,8 @@ const userSchemaDB = new Schema({
     enum: genderList,
     default: "female"
   },
-   avatarURL: String, 
-   token: String
+   avatarURL: String,
+   lockedToken: String
 
    
    },  { versionKey: false, timestamps: true })

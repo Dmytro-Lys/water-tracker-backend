@@ -35,8 +35,7 @@ const updateUserInfo = async (req, res) => {
    }
     
     const { _id } = req.user;
-     const user = await User.findByIdAndUpdate(_id, req.body);
-    if (!user) throw HttpError(404, "Not found");
+    const user = await User.findByIdAndUpdate(_id, req.body);
     const { userName = "", gender, email } = user;
     res.status(200).json({
         email,
@@ -59,8 +58,7 @@ const updateAvatarUser = async (req, res) => {
       
     });
     await fs.unlink(path);
-    const user = await User.findByIdAndUpdate(_id, { avatarURL });
-    if (!user) throw HttpError(404, "Not found");
+    await User.findByIdAndUpdate(_id, { avatarURL });
     res.status(200).json({
         avatarURL
     })

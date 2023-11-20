@@ -20,7 +20,6 @@ const signup = async(req, res, next) => {
     }
 
     const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "23h" });
-    await User.findByIdAndUpdate(_id, { token });
    
     res.status(201).json({
          token,
@@ -53,7 +52,6 @@ const signin = async(req, res, next) => {
     }
 
     const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "23h" });
-    await User.findByIdAndUpdate(_id, { token });
     
     res.status(200).json({
         token,
@@ -68,8 +66,8 @@ const signin = async(req, res, next) => {
 }
 
 const signout = async(req, res)=> {
-    const {_id} = req.user;
-    await User.findByIdAndUpdate(_id, {token: ""});
+    const {_id, lockedToken} = req.user;
+    await User.findByIdAndUpdate(_id, {lockedToken});
     res.status(204).json()
 }
 
@@ -88,7 +86,7 @@ const resetPassword = async (req, res) => {
     })
 
     const password = await bcrypt.hash(newPassword, 10);
-    await User.findByIdAndUpdate(user._id, { password, token: "" });
+    await User.findByIdAndUpdate(user._id, { password});
 
     const sendNewPassword = {
         to: email,

@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+import { Schema, model, trusted } from "mongoose";
 import Joi from "joi";
 
 import { handleSaveError, runValidatorsAtUpdate } from "./hooks.js";
@@ -53,8 +53,8 @@ const userSchemaDB = new Schema({
     default: "female"
   },
    avatarURL: String,
-   lockedToken: String
-
+   lockedToken: String,
+   logined: Boolean
    
    },  { versionKey: false, timestamps: true })
 

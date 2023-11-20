@@ -12,7 +12,7 @@ const { JWT_SECRET} = process.env;
 const signup = async(req, res, next) => {
     const {password, email} = req.body
     req.body.password = await bcrypt.hash(password, 10);
-    
+    req.body.logined = true;
     const {_id, userName = '', avatarURL = '', gender, waterRate} = await User.create(req.body);
     
     const payload = {
@@ -52,6 +52,7 @@ const signin = async(req, res, next) => {
     }
 
     const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "23h" });
+    await User.findByIdAndUpdate(_id, { logined: true })
     
     res.status(200).json({
         token,
@@ -67,7 +68,7 @@ const signin = async(req, res, next) => {
 
 const signout = async(req, res)=> {
     const {_id, lockedToken} = req.user;
-    await User.findByIdAndUpdate(_id, {lockedToken});
+    await User.findByIdAndUpdate(_id, {lockedToken, logined: false});
     res.status(204).json()
 }
 

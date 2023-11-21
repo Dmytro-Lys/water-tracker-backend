@@ -42,12 +42,4 @@ export const waterInputSchemaJoi = Joi.object({
   }),
 });
 
-export const updateWaterInputSchema = Joi.object({
-  waterVolume: Joi.number().min(1).max(5000).required().messages({
-    "number.min": `The "Input" should be minimum {#limit}`,
-    "number.max": `The "Input" should be maximum {#limit}`,
-    "any.required": `"waterVolume" required field`,
-  }),
-});
-
 export default WaterInput;

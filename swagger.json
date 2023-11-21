@@ -324,7 +324,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/AddNewInputRequest"
+                "$ref": "#/components/schemas/InputRequest"
               }
             }
           }
@@ -335,7 +335,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AddNewInputResponse"
+                  "$ref": "#/components/schemas/InputResponse"
                 }
               }
             }
@@ -406,7 +406,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/EditInputRequest"
+                "$ref": "#/components/schemas/InputRequest"
               }
             }
           }
@@ -417,7 +417,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AddNewInputResponse"
+                  "$ref": "#/components/schemas/InputResponse"
                 }
               }
             }
@@ -768,7 +768,7 @@
           "dailyNormFulfillment": 50
         }
       },
-      "AddNewInputRequest": {
+      "InputRequest": {
         "type": "object",
         "required": ["waterVolume", "date"],
         "properties": {
@@ -783,7 +783,7 @@
         },
         "example": { "waterVolume": 900, "date": "2023-11-14T17:06:57.705Z" }
       },
-      "AddNewInputResponse": {
+      "InputResponse": {
         "type": "object",
         "properties": {
           "waterVolume": {
@@ -801,15 +801,6 @@
           "_id": {
             "type": "string",
             "description": "ID of water input records"
-          },
-
-          "createdAt": {
-            "type": "string",
-            "description": "time of cteating input in DB"
-          },
-          "updatedAt": {
-            "type": "string",
-            "description": "time of the last update of input in DB"
           }
         },
         "example": {
@@ -817,17 +808,6 @@
           "date": "2023-11-14T17:06:57.705Z",
           "owner": "654f6747c4faaae3bc1857f1",
           "_id": "6553d1774cfd0635de52d96b"
-        }
-      },
-      "EditInputRequest": {
-        "type": "object",
-        "required": ["waterVolume"],
-        "properties": {
-          "waterVolume": {
-            "type": "integer",
-            "description": "quantity of drunk water",
-            "example": 100
-          }
         }
       },
       "GetStatisticsForToday": {

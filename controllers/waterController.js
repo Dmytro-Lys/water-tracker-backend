@@ -29,7 +29,8 @@ const updateWaterInput = async (req, res) => {
   const { id } = req.params;
   const result = await WaterInput.findOneAndUpdate(
     { _id: id, owner },
-    req.body
+    req.body,
+    { new: true, projection: { createdAt: 0, updatedAt: 0 } }
   );
   if (!result) {
     throw HttpError(404, `Card with ${id} is not found`);

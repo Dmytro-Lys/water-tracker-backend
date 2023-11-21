@@ -53,10 +53,22 @@ const userSchemaDB = new Schema({
     default: "female"
   },
    avatarURL: String,
-   lockedToken: String,
+   lockedTokens: [{
+      token: String,
+      dateLock: Date
+   }],
    logined: Boolean
    
-   },  { versionKey: false, timestamps: true })
+}, { versionKey: false, timestamps: true })
+   
+userSchemaDB.methods.checkToken = function (token) {
+   return this.lockedTokens && this.lockedTokens.length > 0 ?  this.lockedTokens.find( item => item.token === token) : null
+}
+
+userSchemaDB.methods.clearLockedTokens = function () {
+   const now = new Date()
+   return this.lockedTokens && this.lockedTokens.length > 0 ? this.lockedTokens.filter( item =>  now - item.dateLock < 86400000) : []
+}
 
 userSchemaDB.post("save", handleSaveError);
 

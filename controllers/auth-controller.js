@@ -52,7 +52,8 @@ const signin = async(req, res, next) => {
     }
 
     const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "23h" });
-    await User.findByIdAndUpdate(_id, { logined: true })
+    const lockedTokens = user.clearLockedTokens()
+    await User.findByIdAndUpdate(_id, {lockedTokens, logined: true })
     
     res.status(200).json({
         token,
@@ -67,8 +68,12 @@ const signin = async(req, res, next) => {
 }
 
 const signout = async(req, res)=> {
-    const {_id, lockedToken} = req.user;
-    await User.findByIdAndUpdate(_id, {lockedToken, logined: false});
+    const { _id, lockedToken, lockedTokens = [] } = req.user;
+    lockedTokens.push({
+        token: lockedToken,
+        dateLock: new Date()
+    })
+    await User.findByIdAndUpdate(_id, {lockedTokens, logined: false});
     res.status(204).json()
 }
 

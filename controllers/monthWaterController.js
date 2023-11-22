@@ -13,9 +13,11 @@ const getByMonth = async (req, res) => {
 
   const startOfMonth = new Date();
   startOfMonth.setMonth(adjustedMonth, 1); // Устанавливает первое число месяца
+  startOfMonth.setHours(0, 0, 0, 0); // Установка времени на начало дня
 
   const endOfMonth = new Date();
   endOfMonth.setMonth(adjustedMonth + 1, 0); // Устанавливает последний день месяца
+  endOfMonth.setHours(23, 59, 59, 999); // Установка времени на конец дня
 
   const waterInputsForThisMonth = await WaterInput.find({
     date: {

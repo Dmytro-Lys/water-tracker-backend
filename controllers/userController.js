@@ -50,7 +50,7 @@ const updateAvatarUser = async (req, res) => {
        throw HttpError(400,"File not found")
     }
     const { path } = req.file;
-     const {url:avatarURL} = await cloudinary.uploader.upload(path, {
+     const {secure_url:avatarURL} = await cloudinary.uploader.upload(path, {
          folder: "water-tracker/avatars",
          public_id: `${_id}_avatar`,
          overwrite: true,

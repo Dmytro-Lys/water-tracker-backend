@@ -13,11 +13,13 @@ const storage = multer.diskStorage({
 });
 
 const limits = {
-    fileSize: 5 * 1024 * 1024
+    fileSize: 15 * 1024 * 1024
 }
 
-const fileFilter =  (req, file, cb) => {
-    if (file.originalname.split(".").pop() !== "jpg") {
+const fileFilter = (req, file, cb) => {
+    
+    const extFile = file.originalname.split(".").pop().toUpperCase()
+    if (extFile !== "JPG") {
        return cb(HttpError(400, "File extention not allow"));
     }
     cb(null, true);
